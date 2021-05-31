@@ -9,7 +9,7 @@ export type TrackDescriptor = {
 
 const fetch = require('node-fetch');
 const DEFAULT_TRACK: TrackDescriptor = {name: 'Street Hoops World Theme', uri: 'self_and_other_loop.ogg', artist: 'Altspace'};
-const DEBUG = true;
+const DEBUG = false;
 
 export default class App {
 	public assets: MRE.AssetContainer;
@@ -34,11 +34,12 @@ export default class App {
 	}
 
 	private async started() {
-    this.params.test = 'content_pack';
-
     switch(this.params.test){
       case 'content_pack':
         this.params.content_pack = '1748961296881025140';
+        break;
+      case 'station':
+        this.params.station = 'fmatop10'
         break;
       default:
         break;
@@ -106,26 +107,27 @@ export default class App {
   }
 
   private async loadStation(){
-    // if(!params.poll){ return }
+    if(!this.params.station){ return }
 
-    // let json = null;
+    let json = null;
 
-    // // handle if the poll doesn't exist
-    // try{
-    //   json = require(`../polls/${params.poll}.json`);
-    // }
-    // catch{
-    //   return;
-    // }
+    // handle if the data doesn't exist
+    try{
+      json = require(`../stations/${this.params.station}.json`);
+    }
+    catch{
+      return;
+    }
 
-    // if(DEBUG){ console.log(json) };
+    if(DEBUG){ console.log(json) };
 
-    // let importedPolls = Object.assign({}, json).favorites;
-
-    // if(DEBUG){ console.log(importedPolls) };
-
-    // if(!importedPolls){ return }
-    // this.createFavoritesButtonFor(this.context, user, importedPolls);
+    let importedTracks = Object.assign({}, json).tracks;
+    if(!importedTracks){ return }
+    for(let i=0; i < importedTracks.length; i++){
+      let track = importedTracks[i];
+      this.tracks.push(this.assets.createSound(track.name, { uri: track.uri }));
+    }
+    if(DEBUG){ console.log(`Imported ${this.tracks.length} track(s) from station ${this.params.station}`) }
   }
 
 
