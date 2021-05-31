@@ -2,8 +2,10 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from "./app";
 
 const SCALE = {x: 1, y: 1, z: 1};
+const BUTTON_SCALE = {x: 0.5, y: 0.5, z: 0.5};
+const BUTTON_SPACING = 0.12;
 
-export function createBoombox(app: App) : MRE.Actor {
+export function createBoombox(app: App){
   const body = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: "artifact:1275632250423083329",
     actor: {
@@ -11,13 +13,14 @@ export function createBoombox(app: App) : MRE.Actor {
       transform: {
         local: {
           position: { x: 0, y: 0, z: 0 },
+          rotation: MRE.Quaternion.FromEulerAngles(0, 180 * MRE.DegreesToRadians, 0),
           scale: SCALE
         }
       }
     }
   });
 
-  const play = MRE.Actor.CreateFromLibrary(app.context, {
+  const buttonPlay = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: "artifact:1275632554384294231",
     actor: {
       name: 'ButtonPlay',
@@ -26,9 +29,38 @@ export function createBoombox(app: App) : MRE.Actor {
           // Relative position for play button to player { x: 48.042, y: 19.755, z: 7.175 }
           // Doing this so scaling feedback on hover looks uniform.
           position: { x: -0.48, y: 0.2, z: 0.07 },
-          scale: SCALE
+          scale: BUTTON_SCALE
         }
-      }
+      },
+      parentId: body.id
+    }
+  });
+
+  const buttonPrevious = MRE.Actor.CreateFromLibrary(app.context, {
+    resourceId: "artifact:1275632554384294231",
+    actor: {
+      name: 'ButtonPrevious',
+      transform: {
+        local: {
+          position: { x: buttonPlay.transform.local.position.x + BUTTON_SPACING, y: 0.2, z: 0.07 },
+          scale: BUTTON_SCALE
+        }
+      },
+      parentId: body.id
+    }
+  });
+
+  const buttonNext = MRE.Actor.CreateFromLibrary(app.context, {
+    resourceId: "artifact:1275632554384294231",
+    actor: {
+      name: 'ButtonNext',
+      transform: {
+        local: {
+          position: { x: buttonPlay.transform.local.position.x - BUTTON_SPACING, y: 0.2, z: 0.07 },
+          scale: BUTTON_SCALE
+        }
+      },
+      parentId: body.id
     }
   });
 
@@ -42,7 +74,8 @@ export function createBoombox(app: App) : MRE.Actor {
           position: { x: -0.16, y: .21, z: 0.03 },
           scale: SCALE
         }
-      }
+      },
+      parentId: body.id
     }
   });
 
@@ -56,9 +89,12 @@ export function createBoombox(app: App) : MRE.Actor {
           position: { x: -0.81, y: 0.2, z: .03 },
           scale: SCALE
         }
-      }
+      },
+      parentId: body.id
     }
   });
 
-  return play;
+  app.buttonPlay = buttonPlay;
+  // app.buttonPrevious = buttonPrevious;
+  // app.buttonNext = buttonNext;
 }

@@ -7,9 +7,12 @@ const DEBUG = false;
 export default class App {
 	private assets: MRE.AssetContainer;
   private tracks: MRE.Sound[] = [];
-  private buttonPlay: MRE.Actor;
   private trackPlaying = false;
   private trackSoundInstance: MRE.MediaInstance = null;
+
+  public buttonPlay: MRE.Actor;
+  public buttonPrevious: MRE.Actor;
+  public buttonNext: MRE.Actor;
 
 	constructor(public context: MRE.Context, public params: MRE.ParameterSet) {
 	  this.assets = new MRE.AssetContainer(context);
@@ -20,7 +23,7 @@ export default class App {
 	}
 
 	private async started() {
-    this.buttonPlay = UI.createBoombox(this);
+    UI.createBoombox(this);
     await this.loadTracks();
     await this.wireUpButtons();
 	}
