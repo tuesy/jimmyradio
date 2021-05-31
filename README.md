@@ -55,6 +55,13 @@ Click "Create" and then click "Copy to Clipboard" next to the ID. This is the va
 
 > ...?content_pack=\<your-id-here\>
 
+## Volume
+There are hidden volume controls next to the help button on the back of the boombox. You can preset the volume between 0.0 and 1.0 (default is 0.25):
+
+```
+wss://jimmyradio.herokuapp.com/?volume=0.1
+```
+
 # Development
 * Fork this repo
 * Create a Heroku app and link it to your github repo

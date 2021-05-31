@@ -10,7 +10,7 @@ const PLATE_COLOR = 0.6;
 const BRIGHTNESS = 0.001;
 const FONT = MRE.TextFontFamily.Cursive;
 
-const DEBUG = true;
+const DEBUG = false;
 
 export function createBoombox(app: App){
   // boombox body
