@@ -35,34 +35,40 @@ export function createBoombox(app: App){
       parentId: body.id
     }
   });
+  app.buttonPlay = buttonPlay;
 
-  const buttonPrevious = MRE.Actor.CreateFromLibrary(app.context, {
-    resourceId: "artifact:1275632554384294231",
-    actor: {
-      name: 'ButtonPrevious',
-      transform: {
-        local: {
-          position: { x: buttonPlay.transform.local.position.x + BUTTON_SPACING, y: 0.2, z: 0.07 },
-          scale: BUTTON_SCALE
-        }
-      },
-      parentId: body.id
-    }
-  });
+  if(app.totalTracks > 1){
+    const buttonPrevious = MRE.Actor.CreateFromLibrary(app.context, {
+      resourceId: "artifact:1275632554384294231",
+      actor: {
+        name: 'ButtonPrevious',
+        transform: {
+          local: {
+            position: { x: buttonPlay.transform.local.position.x + BUTTON_SPACING, y: 0.2, z: 0.07 },
+            scale: BUTTON_SCALE
+          }
+        },
+        parentId: body.id
+      }
+    });
 
-  const buttonNext = MRE.Actor.CreateFromLibrary(app.context, {
-    resourceId: "artifact:1275632554384294231",
-    actor: {
-      name: 'ButtonNext',
-      transform: {
-        local: {
-          position: { x: buttonPlay.transform.local.position.x - BUTTON_SPACING, y: 0.2, z: 0.07 },
-          scale: BUTTON_SCALE
-        }
-      },
-      parentId: body.id
-    }
-  });
+    const buttonNext = MRE.Actor.CreateFromLibrary(app.context, {
+      resourceId: "artifact:1275632554384294231",
+      actor: {
+        name: 'ButtonNext',
+        transform: {
+          local: {
+            position: { x: buttonPlay.transform.local.position.x - BUTTON_SPACING, y: 0.2, z: 0.07 },
+            scale: BUTTON_SCALE
+          }
+        },
+        parentId: body.id
+      }
+    });
+
+    app.buttonPrevious = buttonPrevious;
+    app.buttonNext = buttonNext;
+  }
 
   const wooferLeft = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: "artifact:1280051826179178604",
@@ -93,8 +99,4 @@ export function createBoombox(app: App){
       parentId: body.id
     }
   });
-
-  app.buttonPlay = buttonPlay;
-  // app.buttonPrevious = buttonPrevious;
-  // app.buttonNext = buttonNext;
 }
