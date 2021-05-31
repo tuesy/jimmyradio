@@ -7,8 +7,10 @@ const BUTTON_SPACING = 0.12;
 const PLATE_DIMENSIONS = { x: 0.15, y: 0.23, z: 0.02 };
 const PLATE_COLOR = 0.6;
 const BRIGHTNESS = 0.001;
+const FONT = MRE.TextFontFamily.Cursive;
 
 export function createBoombox(app: App){
+  // boombox body
   const body = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: "artifact:1275632250423083329",
     actor: {
@@ -27,6 +29,7 @@ export function createBoombox(app: App){
   if(app.totalTracks > 1)
     playButtonScale = BUTTON_SCALE;
 
+  // big center play button
   const buttonPlay = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: "artifact:1275632554384294231",
     actor: {
@@ -44,6 +47,7 @@ export function createBoombox(app: App){
   });
   app.buttonPlay = buttonPlay;
 
+  // side previous and next buttons
   if(app.totalTracks > 1){
     const backgroundTexture = app.assets.createTexture("bgTex", { uri: 'Boombox.jpg' } );
     const backgroundMaterial = app.assets.createMaterial("bgMat", {
@@ -125,6 +129,7 @@ export function createBoombox(app: App){
     app.buttonNext = buttonNext;
   }
 
+  // woofers that may animate later
   const wooferLeft = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: "artifact:1280051826179178604",
     actor: {
@@ -139,7 +144,6 @@ export function createBoombox(app: App){
       parentId: body.id
     }
   });
-
   const wooferRight = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: "artifact:1280051826179178604",
     actor: {
@@ -154,4 +158,25 @@ export function createBoombox(app: App){
       parentId: body.id
     }
   });
+
+  const trackInfo = MRE.Actor.Create(app.context, {
+    actor: {
+      name: 'Song Info',
+      transform: {
+        local: {
+          position: { x: 0.48, y: 0.07, z: 0.31 }, // (when looking at the back of the boombox) +x is left, +y is up, +z is towards you
+          rotation: MRE.Quaternion.FromEulerAngles(0, 180 * MRE.DegreesToRadians, 0)
+        }
+      },
+      collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 0.5, y: 0.2, z: 0.01 } } },
+      text: {
+        contents: 'JimmyRadio',
+        height: 0.04,
+        anchor: MRE.TextAnchorLocation.MiddleCenter,
+        justify: MRE.TextJustify.Center,
+        font: FONT
+      }
+    }
+  });
+  app.trackInfo = trackInfo;
 }

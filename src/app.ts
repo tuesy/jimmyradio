@@ -24,6 +24,7 @@ export default class App {
   public buttonPlay: MRE.Actor;
   public buttonPrevious: MRE.Actor;
   public buttonNext: MRE.Actor;
+  public trackInfo: MRE.Actor;
 
 	constructor(public context: MRE.Context, public params: MRE.ParameterSet) {
 	  this.assets = new MRE.AssetContainer(context);
@@ -133,8 +134,10 @@ export default class App {
 
   private async playTrack(track: MRE.Sound) {
     if(DEBUG){ console.log(`[JimmyRadio][Playing] ${track.name} - ${this.trackIndex + 1} of ${this.totalTracks}`) }
+    this.trackInfo.text.contents = `${track.name} (${this.trackIndex + 1} of ${this.totalTracks})`;
     this.trackSoundInstance = this.buttonPlay.startSound(track.id,
       { volume: .25, looping: true, doppler: 0, spread: 0.75, });
+
   }
 
   private async wireUpButtons(){
