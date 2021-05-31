@@ -20,6 +20,10 @@ export function createBoombox(app: App){
     }
   });
 
+  let playButtonScale = {x: 1, y: 1, z: 1};
+  if(app.totalTracks > 1)
+    playButtonScale = BUTTON_SCALE;
+
   const buttonPlay = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: "artifact:1275632554384294231",
     actor: {
@@ -29,7 +33,7 @@ export function createBoombox(app: App){
           // Relative position for play button to player { x: 48.042, y: 19.755, z: 7.175 }
           // Doing this so scaling feedback on hover looks uniform.
           position: { x: -0.48, y: 0.2, z: 0.07 },
-          scale: BUTTON_SCALE
+          scale: playButtonScale
         }
       },
       parentId: body.id

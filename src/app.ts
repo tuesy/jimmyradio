@@ -2,7 +2,7 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import * as UI from "./ui";
 
 const fetch = require('node-fetch');
-const DEBUG = false;
+const DEBUG = true;
 
 export default class App {
 	private assets: MRE.AssetContainer;
@@ -50,7 +50,7 @@ export default class App {
   }
 
   private async playTrack(track: MRE.Sound) {
-    console.log(`Track: ${track.name} - ${this.trackIndex + 1} of ${this.totalTracks}`);
+    if(DEBUG){ console.log(`Track: ${track.name} - ${this.trackIndex + 1} of ${this.totalTracks}`) }
     this.trackSoundInstance = this.buttonPlay.startSound(track.id,
       { volume: .25, looping: true, doppler: 0, spread: 0.75, });
   }
