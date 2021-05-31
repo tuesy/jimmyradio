@@ -18,8 +18,8 @@ export default class App {
   private trackIndex = 0;
   private currentTrack: MRE.Sound = null;
   private defaultMultiple = false;
-  public defaultVolume = 0.25;
-  public volumeIncrement = 0.1; // range is 0.0-1.0
+  public defaultVolume = 0.2;
+  public volumeIncrement = 0.05; // range is 0.0-1.0
 
   public assets: MRE.AssetContainer;
   public trackSoundInstance: MRE.MediaInstance = null;
@@ -42,9 +42,6 @@ export default class App {
 	}
 
 	private async started() {
-
-this.params.volume = "0.9";
-
     switch(this.params.test){
       case 'content_pack':
         this.params.content_pack = '1748961296881025140';
@@ -63,6 +60,8 @@ this.params.volume = "0.9";
         this.currentVolume = userVolume;
       }
     }
+
+    if(DEBUG){ console.log(`Volume: ${this.currentVolume}`) }
 
     await this.loadTracks();
 

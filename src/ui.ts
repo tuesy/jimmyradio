@@ -227,8 +227,13 @@ export function createVolumeButtons(app: App){
     if(!Utils.canManageRadio(user))
       return;
 
-    if((app.currentVolume + app.volumeIncrement) <= 1.0){
-      app.currentVolume += app.volumeIncrement;
+    let increment = app.volumeIncrement;
+    let current = Math.round(app.currentVolume * 100) / 100;
+    if(current <= increment)
+      increment = increment / 5;
+
+    if((app.currentVolume + increment) <= 1.0){
+      app.currentVolume += increment;
       if(app.trackSoundInstance)
         app.trackSoundInstance.setState({volume: app.currentVolume});
     }
@@ -255,8 +260,13 @@ export function createVolumeButtons(app: App){
     if(!Utils.canManageRadio(user))
       return;
 
-    if((app.currentVolume - app.volumeIncrement) >= 0){
-      app.currentVolume -= app.volumeIncrement;
+    let increment = app.volumeIncrement;
+    let current = Math.round(app.currentVolume * 100) / 100;
+    if(current <= increment)
+      increment = increment / 5;
+
+    if((current - increment) >= 0){
+      app.currentVolume -= increment;
       if(app.trackSoundInstance)
         app.trackSoundInstance.setState({volume: app.currentVolume});
     }
