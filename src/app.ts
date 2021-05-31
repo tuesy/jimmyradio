@@ -42,6 +42,9 @@ export default class App {
 	}
 
 	private async started() {
+
+this.params.volume = "0.9";
+
     switch(this.params.test){
       case 'content_pack':
         this.params.content_pack = '1748961296881025140';
@@ -51,6 +54,14 @@ export default class App {
         break;
       default:
         break;
+    }
+
+    // preset the volume
+    if(this.params.volume){
+      let userVolume = Number(this.params.volume);
+      if(userVolume > 0 && userVolume < 1){
+        this.currentVolume = userVolume;
+      }
     }
 
     await this.loadTracks();
