@@ -40,6 +40,7 @@ export default class App {
   private async loadTracks() {
     this.tracks.push(await this.assets.createSound('Track1', { uri: 'self_and_other_loop.ogg' }));
     this.tracks.push(await this.assets.createSound('Track2', { uri: 'JazzLoopstereo.ogg' }));
+    this.tracks.push(await this.assets.createSound('Track3', { uri: 'https://cdn-content-ingress.altvr.com/uploads/audio_clip/audio/1168441484869894861/inner_light.ogg' }));
 
     // calculate total for next/previous buttons
     this.totalTracks = this.assets.sounds.length;
@@ -83,30 +84,43 @@ export default class App {
 
       // Previous Button
       buttonBehaviorPrevious.onClick(async (user) => {
-        if (!this.canManageRadio(user))
-          return;
-
-        // stop if currently playing
-        if (this.trackPlaying) {
-          this.trackSoundInstance.pause();
-          this.trackPlaying = false;
-        }
-
-        // switch to previous track
-        this.trackIndex -= 1;
-        if(this.trackIndex < 0)
-          this.trackIndex = this.totalTracks - 1;
-        this.currentTrack = this.tracks[this.trackIndex];
-
-        // play
-        this.playTrack(this.currentTrack);
-        this.trackPlaying = true;
+        this.changeTracks(user, false);
       });
 
       // Next Button
+      buttonBehaviorNext.onClick(async (user) => {
+        this.changeTracks(user, true);
+      });
     }
   }
 
+  private changeTracks(user: MRE.User, next: boolean){
+    if (!this.canManageRadio(user))
+      return;
+
+    // stop if currently playing
+    if (this.trackPlaying) {
+      this.trackSoundInstance.pause();
+      this.trackPlaying = false;
+    }
+
+    // switch tracks
+    if(next){
+      this.trackIndex += 1;
+      if(this.trackIndex > this.totalTracks - 1)
+        this.trackIndex = 0;
+    }
+    else{
+      this.trackIndex -= 1;
+      if(this.trackIndex < 0)
+        this.trackIndex = this.totalTracks - 1;
+    }
+    this.currentTrack = this.tracks[this.trackIndex];
+
+    // play
+    this.playTrack(this.currentTrack);
+    this.trackPlaying = true;
+  }
 
   private loadContentPack(params: MRE.ParameterSet, user: MRE.User){
     // if(!params.content_pack){ return }
