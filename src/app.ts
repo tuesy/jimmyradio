@@ -1,5 +1,6 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import * as UI from "./ui";
+import * as Utils from "./utils";
 
 export type TrackDescriptor = {
   name: string,
@@ -12,20 +13,25 @@ const DEFAULT_TRACK: TrackDescriptor = {name: 'Street Hoops World Theme', uri: '
 const DEBUG = false;
 
 export default class App {
-	public assets: MRE.AssetContainer;
   private tracks: MRE.Sound[] = [];
   private trackPlaying = false;
-  private trackSoundInstance: MRE.MediaInstance = null;
   private trackIndex = 0;
   private currentTrack: MRE.Sound = null;
   private defaultMultiple = false;
+  public defaultVolume = 0.25;
+  public volumeIncrement = 0.1; // range is 0.0-1.0
 
+  public assets: MRE.AssetContainer;
+  public trackSoundInstance: MRE.MediaInstance = null;
   public totalTracks = 0;
   public buttonPlay: MRE.Actor;
   public buttonPrevious: MRE.Actor;
   public buttonNext: MRE.Actor;
   public trackInfo: MRE.Actor;
   public helpButton: MRE.Actor;
+  public currentVolume = this.defaultVolume;
+  public volumeUp: MRE.Actor;
+  public volumeDown: MRE.Actor;
 
 	constructor(public context: MRE.Context, public params: MRE.ParameterSet) {
 	  this.assets = new MRE.AssetContainer(context);
@@ -61,6 +67,7 @@ export default class App {
     UI.createBoombox(this);
     this.wireUpButtons();
     UI.createHelpButton(this);
+    UI.createVolumeButtons(this);
 	}
 
   private userLeft(user: MRE.User) {
@@ -133,13 +140,11 @@ export default class App {
     if(DEBUG){ console.log(`Imported ${this.tracks.length} track(s) from station ${this.params.station}`) }
   }
 
-
   private async playTrack(track: MRE.Sound) {
     if(DEBUG){ console.log(`[JimmyRadio][Playing] ${track.name} - ${this.trackIndex + 1} of ${this.totalTracks}`) }
     this.trackInfo.text.contents = `${track.name} (${this.trackIndex + 1} of ${this.totalTracks})`;
     this.trackSoundInstance = this.buttonPlay.startSound(track.id,
-      { volume: .25, looping: true, doppler: 0, spread: 0.75, });
-
+      { volume: this.currentVolume, looping: true, doppler: 0, spread: 0.75 });
   }
 
   private async wireUpButtons(){
@@ -149,7 +154,7 @@ export default class App {
 
     // Play Button
     buttonBehaviorPlay.onClick(async (user) => {
-      if (!this.canManageRadio(user))
+      if(!Utils.canManageRadio(user))
         return;
 
       if (firstPlay) {
@@ -182,7 +187,7 @@ export default class App {
   }
 
   private changeTracks(user: MRE.User, next: boolean){
-    if (!this.canManageRadio(user))
+    if (!Utils.canManageRadio(user))
       return;
 
     // stop if currently playing
@@ -207,11 +212,5 @@ export default class App {
     // play
     this.playTrack(this.currentTrack);
     this.trackPlaying = true;
-  }
-
-
-  private canManageRadio(user: MRE.User) : boolean{
-    let roles = user.properties['altspacevr-roles'].split(',');
-    return roles && (roles.includes('moderator') || roles.includes('terraformer') || roles.includes('host'))
   }
 }

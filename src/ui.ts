@@ -1,5 +1,6 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from "./app";
+import * as Utils from "./utils";
 
 const SCALE = {x: 1, y: 1, z: 1};
 const BUTTON_SCALE = {x: 0.6, y: 0.6, z: 0.6};
@@ -8,6 +9,8 @@ const PLATE_DIMENSIONS = { x: 0.15, y: 0.23, z: 0.02 };
 const PLATE_COLOR = 0.6;
 const BRIGHTNESS = 0.001;
 const FONT = MRE.TextFontFamily.Cursive;
+
+const DEBUG = true;
 
 export function createBoombox(app: App){
   // boombox body
@@ -199,18 +202,69 @@ export function createHelpButton(app: App){
     }
    });
   button.setBehavior(MRE.ButtonBehavior).onClick(user => {
-    user.prompt(text).then(res => {
-        if(res.submitted){
-          // clicked 'OK'
-        }
-        else{
-          // clicked 'Cancel'
-        }
-    })
-    .catch(err => {
-      console.error(err);
-    });
+    user.prompt(text).then(res => {}).catch(err => { console.error(err) });
   });
 
   app.helpButton = button;
+}
+
+export function createVolumeButtons(app: App){
+  const volumeUp = MRE.Actor.CreateFromLibrary(app.context, {
+    resourceId: 'artifact:1238557506142208451', // black play button
+    actor: {
+      name: 'Volumn Up Button',
+      transform: {
+        local: {
+          position: { x: 0.996, y: 0.37, z: 0.40 },
+          rotation: MRE.Quaternion.FromEulerAngles(0, 180 * MRE.DegreesToRadians, -90 * MRE.DegreesToRadians),
+          scale: { x: 0.5, y: 0.5, z: 0.5 }
+        }
+      },
+      collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 0.5, y: 0.2, z: 0.01 } } }
+    }
+   });
+  volumeUp.setBehavior(MRE.ButtonBehavior).onClick(user => {
+    if(!Utils.canManageRadio(user))
+      return;
+
+    if((app.currentVolume + app.volumeIncrement) <= 1.0){
+      app.currentVolume += app.volumeIncrement;
+      if(app.trackSoundInstance)
+        app.trackSoundInstance.setState({volume: app.currentVolume});
+    }
+
+    if(DEBUG){ console.log(`Volume: ${app.currentVolume}`) }
+
+  });
+
+  const volumeDown = MRE.Actor.CreateFromLibrary(app.context, {
+    resourceId: 'artifact:1238557506142208451', // black play button
+    actor: {
+      name: 'Volumn Down Button',
+      transform: {
+        local: {
+          position: { x: 0.63, y: 0.30, z: 0.40 },
+          rotation: MRE.Quaternion.FromEulerAngles(0, 180 * MRE.DegreesToRadians, 90 * MRE.DegreesToRadians),
+          scale: { x: 0.5, y: 0.5, z: 0.5 }
+        }
+      },
+      collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 0.5, y: 0.2, z: 0.01 } } }
+    }
+   });
+  volumeDown.setBehavior(MRE.ButtonBehavior).onClick(user => {
+    if(!Utils.canManageRadio(user))
+      return;
+
+    if((app.currentVolume - app.volumeIncrement) >= 0){
+      app.currentVolume -= app.volumeIncrement;
+      if(app.trackSoundInstance)
+        app.trackSoundInstance.setState({volume: app.currentVolume});
+    }
+
+    if(DEBUG){ console.log(`Volume: ${app.currentVolume}`) }
+
+  });
+
+  app.volumeUp = volumeUp;
+  app.volumeDown = volumeDown;
 }
