@@ -12,6 +12,19 @@ You can place it manually using:
 wss://jimmyradio.herokuapp.com/
 ```
 
+## Stations
+
+You can choose a preset station (more coming soon):
+
+```
+wss://jimmyradio.herokuapp.com/?station=fmatop10
+```
+
+| Name       | Description                                   |
+| ---------- | ----------                                    |
+| fmatop10   | selections from the Free Music Archive Top 10 |
+
+
 ## Content Packs
 You can load your own sound files by specifying a Content Pack:
 
