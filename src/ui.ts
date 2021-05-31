@@ -180,3 +180,37 @@ export function createBoombox(app: App){
   });
   app.trackInfo = trackInfo;
 }
+
+export function createHelpButton(app: App){
+  let text = `Play music in your Events and Worlds. \n\nLearn more at github.com/tuesy/jimmyradio`;
+
+  const button = MRE.Actor.CreateFromLibrary(app.context, {
+    resourceId: 'artifact:1579238405710021245',
+    actor: {
+      name: 'Help Button',
+      transform: {
+        local: {
+          position: { x: 0.9, y: 0.35, z: 0.29 },
+          rotation: MRE.Quaternion.FromEulerAngles(0, 180 * MRE.DegreesToRadians, 0),
+          scale: { x: 0.3, y: 0.3, z: 0.3 }
+        }
+      },
+      collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 0.5, y: 0.2, z: 0.01 } } }
+    }
+   });
+  button.setBehavior(MRE.ButtonBehavior).onClick(user => {
+    user.prompt(text).then(res => {
+        if(res.submitted){
+          // clicked 'OK'
+        }
+        else{
+          // clicked 'Cancel'
+        }
+    })
+    .catch(err => {
+      console.error(err);
+    });
+  });
+
+  app.helpButton = button;
+}

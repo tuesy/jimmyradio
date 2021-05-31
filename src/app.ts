@@ -25,6 +25,7 @@ export default class App {
   public buttonPrevious: MRE.Actor;
   public buttonNext: MRE.Actor;
   public trackInfo: MRE.Actor;
+  public helpButton: MRE.Actor;
 
 	constructor(public context: MRE.Context, public params: MRE.ParameterSet) {
 	  this.assets = new MRE.AssetContainer(context);
@@ -59,6 +60,7 @@ export default class App {
     // controls
     UI.createBoombox(this);
     this.wireUpButtons();
+    UI.createHelpButton(this);
 	}
 
   private userLeft(user: MRE.User) {
