@@ -12,7 +12,7 @@ const DEFAULT_TRACK: TrackDescriptor = {name: 'Street Hoops World Theme', uri: '
 const DEBUG = true;
 
 export default class App {
-	private assets: MRE.AssetContainer;
+	public assets: MRE.AssetContainer;
   private tracks: MRE.Sound[] = [];
   private trackPlaying = false;
   private trackSoundInstance: MRE.MediaInstance = null;

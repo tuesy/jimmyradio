@@ -69,3 +69,5 @@ app.zip
 .openode
 
 tsconfig.tsbuildinfo
+
+.DS_Store

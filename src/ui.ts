@@ -2,8 +2,11 @@ import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from "./app";
 
 const SCALE = {x: 1, y: 1, z: 1};
-const BUTTON_SCALE = {x: 0.5, y: 0.5, z: 0.5};
+const BUTTON_SCALE = {x: 0.6, y: 0.6, z: 0.6};
 const BUTTON_SPACING = 0.12;
+const PLATE_DIMENSIONS = { x: 0.15, y: 0.23, z: 0.02 };
+const PLATE_COLOR = 0.6;
+const BRIGHTNESS = 0.001;
 
 export function createBoombox(app: App){
   const body = MRE.Actor.CreateFromLibrary(app.context, {
@@ -42,8 +45,19 @@ export function createBoombox(app: App){
   app.buttonPlay = buttonPlay;
 
   if(app.totalTracks > 1){
-    const buttonPrevious = MRE.Actor.CreateFromLibrary(app.context, {
-      resourceId: "artifact:1275632554384294231",
+    const backgroundTexture = app.assets.createTexture("bgTex", { uri: 'Boombox.jpg' } );
+    const backgroundMaterial = app.assets.createMaterial("bgMat", {
+      mainTextureId: backgroundTexture.id,
+      mainTextureScale: {x: 0.25, y: 0.25},
+      mainTextureOffset: {x: 0, y: 0.2},
+      color: new MRE.Color3(PLATE_COLOR, PLATE_COLOR, PLATE_COLOR)
+    });
+
+    const buttonPrevious = MRE.Actor.CreatePrimitive(app.assets, {
+      definition: {
+        shape: MRE.PrimitiveShape.Box,
+        dimensions: PLATE_DIMENSIONS
+      },
       actor: {
         name: 'ButtonPrevious',
         transform: {
@@ -52,12 +66,32 @@ export function createBoombox(app: App){
             scale: BUTTON_SCALE
           }
         },
+        appearance: {
+          materialId: backgroundMaterial.id
+        },
         parentId: body.id
+      },
+      addCollider: true
+    });
+    MRE.Actor.CreateFromLibrary(app.context, {
+      resourceId: "artifact:1238556506320798178",
+      actor: {
+        name: 'ButtonPreviousOverlay',
+        transform: {
+          local: {
+            position: { x: -0.326, y: -0.55, z: -0.33}, // -x is right, -y is down, -z is into the boombox
+            scale: {x: 1.5, y: 1.5, z: 1.5}
+          }
+        },
+        parentId: buttonPrevious.id
       }
     });
 
-    const buttonNext = MRE.Actor.CreateFromLibrary(app.context, {
-      resourceId: "artifact:1275632554384294231",
+    const buttonNext = MRE.Actor.CreatePrimitive(app.assets, {
+      definition: {
+        shape: MRE.PrimitiveShape.Box,
+        dimensions: PLATE_DIMENSIONS
+      },
       actor: {
         name: 'ButtonNext',
         transform: {
@@ -66,7 +100,24 @@ export function createBoombox(app: App){
             scale: BUTTON_SCALE
           }
         },
+        appearance: {
+          materialId: backgroundMaterial.id
+        },
         parentId: body.id
+      },
+      addCollider: true
+    });
+    MRE.Actor.CreateFromLibrary(app.context, {
+      resourceId: "artifact:1238556842913694653",
+      actor: {
+        name: 'ButtonNextOverlay',
+        transform: {
+          local: {
+            position: { x: 0.31, y: -0.55, z: -0.33}, // +x is left, -y is down, -z is into the boombox
+            scale: {x: 1.5, y: 1.5, z: 1.5}
+          }
+        },
+        parentId: buttonNext.id
       }
     });
 
