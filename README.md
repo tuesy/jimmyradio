@@ -4,6 +4,11 @@ JimmyRadio is an Altspace app for playing music.
 
 # Usage
 
+## Known Issues
+
+* If the host leaves or reenters, the music stops playing and controls don't work (restart the app)
+* There's no way to automatically skip to the next song when the current one finishes (click Next)
+
 ## Spawning the App
 
 You can place it manually using:
