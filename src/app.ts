@@ -65,21 +65,21 @@ export default class App {
     }
     Utils.debug(`Volume: ${this.currentVolume}`);
 
+    await Promise.all([
+      UI.createBoombox(this),
+      this.wireUpButtons(),
+      UI.createHelpButton(this),
+      UI.createVolumeButtons(this)
+    ]).catch();
+
+    Utils.debug(`created the Boombox`)
+
     if(this.params.content_pack)
       this.loadContentPack();
     else if (this.params.station)
       this.loadStation();
 
     // if(DEBUG){ console.log(this.tracks) }
-
-    // controls
-    if(!this.boombox){
-      UI.createBoombox(this);
-      this.wireUpButtons();
-      UI.createHelpButton(this);
-      UI.createVolumeButtons(this);
-      Utils.debug(`created the Boombox`)
-    }
 
     Utils.debug(`end started()`);
 	}
@@ -162,6 +162,13 @@ export default class App {
   }
 
   private async wireUpButtons(){
+    // need to wait until the buttons are created
+    await Promise.all([
+      this.buttonPlay.created(),
+      this.buttonPrevious.created(),
+      this.buttonNext.created(),
+    ]);
+
     const buttonBehaviorPlay = this.buttonPlay.setBehavior(MRE.ButtonBehavior);
 
     // Play Button

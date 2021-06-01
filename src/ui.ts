@@ -11,7 +11,7 @@ const PLATE_COLOR = 0.6;
 const BRIGHTNESS = 0.001;
 const FONT = MRE.TextFontFamily.Cursive;
 
-export function createBoombox(app: App){
+export async function createBoombox(app: App){
   // boombox body
   const body = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: "artifact:1275632250423083329",
@@ -178,7 +178,7 @@ export function createBoombox(app: App){
   app.boombox = body;
 }
 
-export function createHelpButton(app: App){
+export function createHelpButton(app: App): MRE.Actor{
   let text = `Play music in your Events and Worlds. \n\nLearn more at github.com/tuesy/jimmyradio`;
 
   const button = MRE.Actor.CreateFromLibrary(app.context, {
@@ -195,14 +195,15 @@ export function createHelpButton(app: App){
       collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 0.5, y: 0.2, z: 0.01 } } }
     }
    });
+
   button.setBehavior(MRE.ButtonBehavior).onClick(user => {
     user.prompt(text).then(res => {}).catch(err => { console.error(err) });
   });
 
-  app.helpButton = button;
+  return button;
 }
 
-export function createVolumeButtons(app: App){
+export async function createVolumeButtons(app: App){
   const volumeUp = MRE.Actor.CreateFromLibrary(app.context, {
     resourceId: 'artifact:1238557506142208451', // black play button
     actor: {
@@ -217,6 +218,28 @@ export function createVolumeButtons(app: App){
       collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 0.5, y: 0.2, z: 0.01 } } }
     }
    });
+
+  const volumeDown = MRE.Actor.CreateFromLibrary(app.context, {
+    resourceId: 'artifact:1238557506142208451', // black play button
+    actor: {
+      name: 'Volumn Down Button',
+      transform: {
+        local: {
+          position: { x: 0.63, y: 0.30, z: 0.40 },
+          rotation: MRE.Quaternion.FromEulerAngles(0, 180 * MRE.DegreesToRadians, 90 * MRE.DegreesToRadians),
+          scale: { x: 0.5, y: 0.5, z: 0.5 }
+        }
+      },
+      collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 0.5, y: 0.2, z: 0.01 } } }
+    }
+   });
+
+  // need to wait until the buttons are created
+  await Promise.all([
+    volumeUp.created(),
+    volumeDown.created()
+  ]);
+
   volumeUp.setBehavior(MRE.ButtonBehavior).onClick(user => {
     if(!Utils.canManageRadio(user))
       return;
@@ -236,20 +259,6 @@ export function createVolumeButtons(app: App){
 
   });
 
-  const volumeDown = MRE.Actor.CreateFromLibrary(app.context, {
-    resourceId: 'artifact:1238557506142208451', // black play button
-    actor: {
-      name: 'Volumn Down Button',
-      transform: {
-        local: {
-          position: { x: 0.63, y: 0.30, z: 0.40 },
-          rotation: MRE.Quaternion.FromEulerAngles(0, 180 * MRE.DegreesToRadians, 90 * MRE.DegreesToRadians),
-          scale: { x: 0.5, y: 0.5, z: 0.5 }
-        }
-      },
-      collider: { geometry: { shape: MRE.ColliderType.Box, size: { x: 0.5, y: 0.2, z: 0.01 } } }
-    }
-   });
   volumeDown.setBehavior(MRE.ButtonBehavior).onClick(user => {
     if(!Utils.canManageRadio(user))
       return;
