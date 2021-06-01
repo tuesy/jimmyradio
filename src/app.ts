@@ -1,6 +1,7 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import * as UI from "./ui";
 import * as Utils from "./utils";
+import * as Audio from "./audio";
 
 export type TrackDescriptor = {
   name: string,
@@ -10,23 +11,14 @@ export type TrackDescriptor = {
 
 const fetch = require('node-fetch');
 const DEFAULT_TRACK: TrackDescriptor = {name: 'Street Hoops World Theme', uri: 'self_and_other_loop.ogg', artist: 'Altspace'};
-const DEBUG = true;
 
-function log(message: string): string{
-  if(!DEBUG)
-    return;
-
-  console.log(`[JimmyRadio][${Date.now().toString()}] - ${message}`);
-}
+export const DEFAULT_VOLUME = 0.2
+export const VOLUME_INCREMENT = 0.05; // range is 0.0-1.0
 
 export default class App {
   private tracks: MRE.Sound[] = [];
   private trackPlaying = false;
   private trackIndex = 0;
-  private defaultMultiple = false;
-  public defaultVolume = 0.2;
-  public volumeIncrement = 0.05; // range is 0.0-1.0
-
   public assets: MRE.AssetContainer;
   public trackSoundInstance: MRE.MediaInstance = null;
   public buttonPlay: MRE.Actor;
@@ -34,20 +26,18 @@ export default class App {
   public buttonNext: MRE.Actor;
   public trackInfo: MRE.Actor;
   public helpButton: MRE.Actor;
-  public currentVolume = this.defaultVolume;
+  public currentVolume = DEFAULT_VOLUME;
   public volumeUp: MRE.Actor;
   public volumeDown: MRE.Actor;
+  public boombox: MRE.Actor;
 
 	constructor(public context: MRE.Context, public params: MRE.ParameterSet) {
 	  this.assets = new MRE.AssetContainer(context);
-
     this.context.onStarted(() => this.started());
-    this.context.onUserLeft(user => this.userLeft(user));
-    this.context.onUserJoined(user => this.userJoined(user));
 	}
 
 	private async started() {
-    log(`begin started()`);
+    Utils.debug(`begin started()`);
 
     switch(this.params.test){
       case 'content_pack':
@@ -73,34 +63,33 @@ export default class App {
         this.currentVolume = userVolume;
       }
     }
-    log(`Volume: ${this.currentVolume}`);
+    Utils.debug(`Volume: ${this.currentVolume}`);
 
-    this.loadContentPack(),
-    this.loadStation();
+    if(this.params.content_pack)
+      this.loadContentPack();
+    else if (this.params.station)
+      this.loadStation();
 
-    if(DEBUG){ console.log(this.tracks) }
+    // if(DEBUG){ console.log(this.tracks) }
 
     // controls
-    UI.createBoombox(this);
-    this.wireUpButtons();
-    UI.createHelpButton(this);
-    UI.createVolumeButtons(this);
+    if(!this.boombox){
+      UI.createBoombox(this);
+      this.wireUpButtons();
+      UI.createHelpButton(this);
+      UI.createVolumeButtons(this);
+      Utils.debug(`created the Boombox`)
+    }
 
-    log(`end started()`);
+    Utils.debug(`end started()`);
 	}
 
   private totalTracks(): number{
-    return this.assets.sounds.length;
+    return this.tracks.length;
   }
 
   private currentTrack(): MRE.Sound{
     return this.tracks[this.trackIndex];
-  }
-
-  private userLeft(user: MRE.User) {
-  }
-
-  private userJoined(user: MRE.User) {
   }
 
   private async loadContentPack(){
@@ -108,28 +97,29 @@ export default class App {
 
     let uri = 'https://account.altvr.com/api/content_packs/' + this.params.content_pack + '/raw.json';
 
-    fetch(uri)
+    // download the Content Pack
+    let importedTracks = await fetch(uri)
       .then((res: any) => res.json())
       .then((json: any) => {
-        let importedTracks = Object.assign({}, json).tracks;
-        if(!importedTracks){ return }
-        for(let i=0; i < importedTracks.length; i++){
-          let track = importedTracks[i];
-          this.tracks.push(this.assets.createSound(track.name, { uri: track.uri }));
-        }
-        log(`Imported ${this.tracks.length} track(s) from ${uri}`);
+        return Object.assign({}, json).tracks;
       })
+
+    if(!importedTracks){ return }
+
+    // download the tracks serially
+    for(let i=0; i < importedTracks.length; i++){
+      let track = importedTracks[i];
+      this.tracks.push(await Audio.load(this, track.name, track.uri));
+    }
+    Utils.debug(`Imported ${this.tracks.length} track(s) from ${uri}`);
   }
 
   private async loadDefault() {
-    if(this.assets.sounds.length > 0){ return }
+    if(this.tracks.length > 0){ return }
 
-    log('Loading default tracks');
+    Utils.debug('Loading default tracks');
 
-    this.tracks.push(await this.assets.createSound(DEFAULT_TRACK.name, { uri: DEFAULT_TRACK.uri }));
-    // this.tracks.push(this.assets.createSound('Track1', { uri: 'self_and_other_loop.ogg' }));
-    // this.tracks.push(this.assets.createSound('Track2', { uri: 'JazzLoopstereo.ogg' }));
-    // this.tracks.push(this.assets.createSound('Track3', { uri: 'https://cdn-content-ingress.altvr.com/uploads/audio_clip/audio/1168441484869894861/inner_light.ogg' }));
+    this.tracks.push(await Audio.load(this, DEFAULT_TRACK.name, DEFAULT_TRACK.uri));
   }
 
   private async loadStation(){
@@ -151,9 +141,9 @@ export default class App {
     if(!importedTracks){ return }
     for(let i=0; i < importedTracks.length; i++){
       let track = importedTracks[i];
-      this.tracks.push(this.assets.createSound(track.name, { uri: track.uri }));
+      this.tracks.push(await Audio.load(this, track.name, track.uri));
     }
-    log(`Imported ${this.tracks.length} track(s) from station ${this.params.station}`);
+    Utils.debug(`Imported ${this.tracks.length} track(s) from station ${this.params.station}`);
   }
 
   private async playTrack() {
@@ -164,7 +154,7 @@ export default class App {
       track = this.tracks[0];
     }
 
-    log(`Playing ${track.name} - ${this.trackIndex + 1} of ${this.totalTracks()}`);
+    Utils.debug(`Playing ${track.name} - ${this.trackIndex + 1} of ${this.totalTracks()}`);
 
     this.trackInfo.text.contents = `${track.name} (${this.trackIndex + 1} of ${this.totalTracks()})`;
     this.trackSoundInstance = this.buttonPlay.startSound(track.id,
@@ -208,7 +198,10 @@ export default class App {
   }
 
   private async changeTracks(user: MRE.User, next: boolean){
-    if (!Utils.canManageRadio(user))
+    if(!Utils.canManageRadio(user))
+      return;
+
+    if(this.totalTracks() < 2)
       return;
 
     // stop if currently playing

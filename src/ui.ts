@@ -1,5 +1,6 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from "./app";
+import { VOLUME_INCREMENT } from "./app";
 import * as Utils from "./utils";
 
 const SCALE = {x: 1, y: 1, z: 1};
@@ -9,8 +10,6 @@ const PLATE_DIMENSIONS = { x: 0.15, y: 0.23, z: 0.02 };
 const PLATE_COLOR = 0.6;
 const BRIGHTNESS = 0.001;
 const FONT = MRE.TextFontFamily.Cursive;
-
-const DEBUG = false;
 
 export function createBoombox(app: App){
   // boombox body
@@ -176,6 +175,7 @@ export function createBoombox(app: App){
     }
   });
   app.trackInfo = trackInfo;
+  app.boombox = body;
 }
 
 export function createHelpButton(app: App){
@@ -221,7 +221,7 @@ export function createVolumeButtons(app: App){
     if(!Utils.canManageRadio(user))
       return;
 
-    let increment = app.volumeIncrement;
+    let increment = VOLUME_INCREMENT;
     let current = Math.round(app.currentVolume * 100) / 100;
     if(current <= increment)
       increment = increment / 5;
@@ -232,7 +232,7 @@ export function createVolumeButtons(app: App){
         app.trackSoundInstance.setState({volume: app.currentVolume});
     }
 
-    if(DEBUG){ console.log(`Volume: ${app.currentVolume}`) }
+    Utils.debug(`Volume: ${app.currentVolume}`);
 
   });
 
@@ -254,7 +254,7 @@ export function createVolumeButtons(app: App){
     if(!Utils.canManageRadio(user))
       return;
 
-    let increment = app.volumeIncrement;
+    let increment = VOLUME_INCREMENT;
     let current = Math.round(app.currentVolume * 100) / 100;
     if(current <= increment)
       increment = increment / 5;
@@ -265,7 +265,7 @@ export function createVolumeButtons(app: App){
         app.trackSoundInstance.setState({volume: app.currentVolume});
     }
 
-    if(DEBUG){ console.log(`Volume: ${app.currentVolume}`) }
+    Utils.debug(`Volume: ${app.currentVolume}`);
 
   });
 
