@@ -16,7 +16,7 @@ function log(message: string): string{
   if(!DEBUG)
     return;
 
-  console.log('JimmyRadio', Date.now().toString(), message);
+  console.log(`[JimmyRadio][${Date.now().toString()}] - ${message}`);
 }
 
 export default class App {
@@ -174,21 +174,20 @@ export default class App {
   private async wireUpButtons(){
     const buttonBehaviorPlay = this.buttonPlay.setBehavior(MRE.ButtonBehavior);
 
-    let firstPlay = true;
-
     // Play Button
     buttonBehaviorPlay.onClick(async (user) => {
       if(!Utils.canManageRadio(user))
         return;
 
-      if (firstPlay) {
-        firstPlay = false;
-        this.trackPlaying = true;
-        await this.playTrack();
-      } else if (this.trackPlaying) {
+      if(this.trackPlaying){
         this.trackSoundInstance.pause();
         this.trackPlaying = false;
-      } else if (!this.trackPlaying) {
+      }
+      else if (!this.trackSoundInstance){ // first time playing
+        await this.playTrack();
+        this.trackPlaying = true;
+      }
+      else if (!this.trackPlaying) {
         this.trackSoundInstance.resume();
         this.trackPlaying = true;
       }
@@ -208,13 +207,13 @@ export default class App {
     });
   }
 
-  private changeTracks(user: MRE.User, next: boolean){
+  private async changeTracks(user: MRE.User, next: boolean){
     if (!Utils.canManageRadio(user))
       return;
 
     // stop if currently playing
     if (this.trackPlaying) {
-      this.trackSoundInstance.pause();
+      this.trackSoundInstance.stop();
       this.trackPlaying = false;
     }
 
@@ -231,7 +230,7 @@ export default class App {
     }
 
     // play
-    this.playTrack();
+    await this.playTrack();
     this.trackPlaying = true;
   }
 }
