@@ -54,7 +54,7 @@ To create your own, start by navigating to http://account.altvr.com/content_pack
 }
 ```
 
-The tracks should be hosted somewhere publically accessible. This example uses files uploaded to https://account.altvr.com/audio_clips, which supports .wav and .ogg formats. Please only upload files you have the rights to use. The Free Music Archive (https://freemusicarchive.org/) is a good place to start and you'll need a tool (e.g. https://audio.online-convert.com/convert-to-ogg) to convert your tracks to .ogg. The tracks will play in the order listed in the file.
+The tracks should in .ogg format and hosted somewhere publically accessible. This example uses files uploaded to Altspace (https://account.altvr.com/audio_clips), which will convert the most common formats to .ogg for you. Please only upload files you have the rights to use. The Free Music Archive (https://freemusicarchive.org/) is a good place to start. The tracks will play in the order listed in the file.
 
 Click "Create" and then click "Copy to Clipboard" next to the ID. This is the value you'll need for the "content_pack" parameter:
 
