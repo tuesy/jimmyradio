@@ -89,5 +89,5 @@ wss://jimmyradio.herokuapp.com/?volume=0.1
 * Enable auto deploys from github
 * In Altspace:
   * Open World Editor > Altspace > Basics > SDK App
-  * `ws://<your subdomain>.herokuapp.com` (port 80)
+  * `wss://<your subdomain>.herokuapp.com` (port 80)
   * Click Confirm
