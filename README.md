@@ -80,6 +80,8 @@ wss://jimmyradio.herokuapp.com/?volume=0.1
 # Known Issues
 
 * There's no way to automatically skip to the next song when the current one finishes (click Next)
+* Boombox appears pink on Mac (Altspace Kit needs to be updated)
+* Users who don't have permissions to manage the app should not be able to target the controls
 
 # Development
 * Fork this repo
