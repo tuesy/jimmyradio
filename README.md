@@ -25,10 +25,11 @@ You can choose from a few stations each containing a short playlist of songs:
 wss://jimmyradio.herokuapp.com/?station=fmatop10
 ```
 
-| Name                | Description                        |
-| ----------          | ----------                         |
-| fmatop10            | Free Music Archive Top 10 All Time |
-| more coming soon... |                                    |
+| Name                | Description                                     |
+| ----------          | ----------                                      |
+| fmatop10all         | Free Music Archive Top 10 All Time              |
+| fmatop10pop         | Free Music Archive Top 10 Pop songs of All Time |
+| more coming soon... |                                                 |
 
 
 ## Content Packs
