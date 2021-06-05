@@ -27,8 +27,9 @@ wss://jimmyradio.herokuapp.com/?station=fmatop10
 
 | Name                | Description                                     |
 | ----------          | ----------                                      |
-| fmatop10all         | Free Music Archive Top 10 All Time              |
-| fmatop10pop         | Free Music Archive Top 10 Pop songs of All Time |
+| top5                | Free Music Archive Top 5 All Time               |
+| top10               | Free Music Archive Top 10 All Time              |
+| pop                 | Free Music Archive Top 10 Pop songs of All Time |
 | more coming soon... |                                                 |
 
 
