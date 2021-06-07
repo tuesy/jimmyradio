@@ -12,7 +12,7 @@ export type TrackDescriptor = {
 const fetch = require('node-fetch');
 const DEFAULT_TRACK: TrackDescriptor = {name: 'Street Hoops World Theme', uri: 'self_and_other_loop.ogg', artist: 'Altspace'};
 
-export const DEFAULT_VOLUME = 0.2
+export const DEFAULT_VOLUME = 0.1 // tested on Rift at 50% volume, Altspace audio levels at 10
 export const VOLUME_INCREMENT = 0.05; // range is 0.0-1.0
 
 export default class App {
