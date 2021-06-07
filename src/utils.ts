@@ -1,7 +1,7 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from "./app";
 
-const DEBUG = true;
+const DEBUG = false;
 
 export function canManageRadio(user: MRE.User) : boolean{
   let roles = user.properties['altspacevr-roles'].split(',');
