@@ -73,10 +73,10 @@ You can upload audio files for use in your Worlds and MREs by creating Audio Cli
 
 ![Volume Controls](https://github.com/tuesy/jimmyradio/blob/main/volume-controls.png?raw=true)
 
-Unfortunately, MRE audio does not seem to be adjustable by the audio controls in the Altspace menu (Menu > Settings > Audio) except for the Master Volume control, so users will not be able to control their individual volume. The volume, however, is spatialized so as you get farther away it'll get quieter. I've set the default volume to 0.2 (on a 0.0 - 1.1 scale) to try to make it sound like a a real-world boombox. There are hidden volume controls next to the help button on the back of the boombox for hosts and moderators. You can also preset the volume with a parameter:
+Unfortunately, MRE audio does not seem to be adjustable by the audio controls in the Altspace menu (Menu > Settings > Audio) except for the Master Volume control, so users will not be able to control their individual volume. The volume, however, is spatialized so as you get farther away it'll get quieter. I've set the default volume to 0.1 (on a 0.0 - 1.0 scale) to try to make it sound like a a real-world boombox. There are hidden volume controls next to the help button on the back of the boombox for hosts and moderators. You can also preset the volume with a parameter:
 
 ```
-wss://jimmyradio.herokuapp.com/?volume=0.1
+wss://jimmyradio.herokuapp.com/?volume=0.05
 ```
 
 # Known Issues
