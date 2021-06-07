@@ -22,15 +22,16 @@ The default song was created for the Altspace Street Hoops World. Not too shabby
 You can choose from a few stations each containing a short playlist of songs:
 
 ```
-wss://jimmyradio.herokuapp.com/?station=fmatop10
+wss://jimmyradio.herokuapp.com/?station=pop
 ```
 
-| Name                | Description                                     |
-| ----------          | ----------                                      |
-| top5                | Free Music Archive Top 5 All Time               |
-| top10               | Free Music Archive Top 10 All Time              |
-| pop                 | Free Music Archive Top 10 Pop songs of All Time |
-| more coming soon... |                                                 |
+| Name                | Description                                           |
+| ----------          | ----------                                            |
+| top5                | Free Music Archive Top 5 All Time                     |
+| top10               | Free Music Archive Top 10 All Time                    |
+| pop                 | Free Music Archive Top 10 Pop songs of All Time       |
+| classical           | Free Music Archive Top 10 Classical songs of All Time |
+| more coming soon... |                                                       |
 
 
 ## Content Packs
